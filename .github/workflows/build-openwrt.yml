@@ -60,6 +60,9 @@ jobs:
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+    
+    - name: Remove lean package
+      run: cd openwrt/package/lean && rm -rf luci-app-netdata
 
     - name: Cache
       uses: klever1988/cachewrtbuild@main
@@ -79,9 +82,6 @@ jobs:
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
-      
-    - name: Remove lean package
-      run: cd openwrt/package/lean && rm -rf luci-app-netdata
 
     - name: Load custom configuration
       run: |
