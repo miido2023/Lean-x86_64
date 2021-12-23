@@ -38,6 +38,14 @@ jobs:
       with:
         path: .commitHash
         key: HEAD-${{ steps.getHash.outputs.commitHash }}
+        
+    - name: Send telegram message
+      if: steps.cacheHash.outputs.cache-hit == 'true'
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: "Lean源码尚未更新"
 
     - name: Save New Commit Hash
       if: steps.cacheHash.outputs.cache-hit != 'true'
