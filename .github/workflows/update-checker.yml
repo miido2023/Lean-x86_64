@@ -14,6 +14,7 @@ name: Update Checker
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
+  MSG: "检测到Lean源码已更新,本次更新内容为："
 
 on:
   workflow_dispatch:
@@ -31,6 +32,7 @@ jobs:
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH .
         echo "::set-output name=commitHash::$(git rev-parse HEAD)"
+        echo "::set-output name=commitLog::$(git log --pretty=format:“%s” ${{ steps.getHash.outputs.commitHash }} -1)"
 
     - name: Compare Commit Hash
       id: cacheHash
@@ -40,13 +42,13 @@ jobs:
         key: HEAD-${{ steps.getHash.outputs.commitHash }}
         
     - name: Send telegram message
-      if: steps.cacheHash.outputs.cache-hit != 'true'
+      if: steps.cacheHash.outputs.cache-hit == 'true'
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: "检测到Lean源码已更新,将为您编译最新版OpenWrt固件包"
-
+        message: ${MSG}${{ steps.getHash.outputs.commitLog }}
+        
     - name: Save New Commit Hash
       if: steps.cacheHash.outputs.cache-hit != 'true'
       run: |
