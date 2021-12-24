@@ -15,3 +15,12 @@ jobs:
         echo "::set-output name=release_tag::$(date '+%Y-%m-%d %H:%M:%S')"
         touch release.txt
         echo "::set-output name=status::success"
+        
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        body_path: release.txt
