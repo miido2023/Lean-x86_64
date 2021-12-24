@@ -25,6 +25,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    
+    - name: Generate release tag
+      id: tag
+      run: |
+        echo "::set-output name=release_tag::$(date '+%Y-%m-%d %H:%M:%S')"
+        touch release.txt
+        echo "::set-output name=status::success"
 
     - name: Get Commit Hash
       id: getHash
@@ -32,7 +39,6 @@ jobs:
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH .
         echo "::set-output name=commitHash::$(git rev-parse HEAD)"
         echo "::set-output name=commitLog::$(git log --pretty=format:“%s” ${{ steps.getHash.outputs.commitHash }} -1)"
-        echo "::set-output name=commitDate::$(date '+%Y-%m-%d %H:%M:%S')"
 
     - name: Compare Commit Hash
       id: cacheHash
