@@ -1,4 +1,4 @@
-name: Update Checker
+name: Date test
 
 on:
   workflow_dispatch:
