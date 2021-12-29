@@ -29,7 +29,7 @@ jobs:
     - name: Generate release tag
       id: tag
       run: |
-        echo "::set-output name=release_tag::$(date '+%Y-%m-%d'(5.10))"
+        echo "::set-output name=release_tag::$(date '+%Y-%m-%d')(5.10)"
         touch release.txt
         echo "::set-output name=status::success"
 
